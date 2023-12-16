@@ -18,7 +18,7 @@ public class TestDataMasker {
    */
   @BeforeEach
   void setup() throws IOException {
-    System.gc(); // In case resources lock
+    System.gc(); // Required in case resources lock
 
     Files.copy(Path.of("resources/dummy/people.json"), Path.of("resources/people.json"),
       StandardCopyOption.REPLACE_EXISTING);
@@ -42,6 +42,13 @@ public class TestDataMasker {
 
   /*
   Tests whether masking people.json with a.rules.json masks the file correctly.
+
+  NOTE: all tests below this point are checking human-made solutions (some are model examples
+  provided in the assignment description) with a solution from the data masker.
+
+  NOTE: all cases labelled with "Trivial case:" indicate impractical scenarios, for example
+  applying a rule clearly made for `people.json` to `nuts.json` - these test cases check
+  that indeed nothing gets masked.
    */
   @Test
   void testPeopleWithRuleA() throws IOException {
@@ -123,6 +130,24 @@ public class TestDataMasker {
 
     String modelContent = new String(Files.readAllBytes(Paths.get(
       "resources/masked/nuts.b.rules.json")));
+    String maskedContent = new String(Files.readAllBytes(Paths.get(
+      "resources/nuts.json")));
+
+    assertEquals(JsonParser.parseString(modelContent), JsonParser.parseString(maskedContent),
+      "The newly masked file should match the exact structure of the model file");
+  }
+
+  @Test
+  /*
+  Tests whether masking nuts.json with c.rules.json masks the files correctly.
+   */
+  void testNutsWithRuleC() throws IOException {
+    dataMasker = new DataMasker("resources/nuts.json", "resources/c.rules.json");
+
+    dataMasker.mask();
+
+    String modelContent = new String(Files.readAllBytes(Paths.get(
+      "resources/masked/nuts.c.rules.json")));
     String maskedContent = new String(Files.readAllBytes(Paths.get(
       "resources/nuts.json")));
 
