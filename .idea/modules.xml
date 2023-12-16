@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Masker.iml" filepath="$PROJECT_DIR$/Masker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DataMasker.iml" filepath="$PROJECT_DIR$/DataMasker.iml" />
     </modules>
   </component>
 </project>
