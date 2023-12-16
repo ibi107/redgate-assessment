@@ -26,8 +26,8 @@ public class DataMasker {
   }
 
   /**
-   * A method which parses sensitive information from the data and rule Json files, replacing them
-   * with '*'.
+   * A method which parses the data and rule Json files, so they can be processed by a helper
+   * method and replace the values in the original data file.
    *
    * @throws IOException if getDataPath() returns an invalid file path
    */
@@ -65,10 +65,27 @@ public class DataMasker {
       for (Map.Entry<String, JsonElement> data : dataObject.entrySet()) {
         if (data.getKey().equals(pattern)) {
           String maskedData = data.getValue().getAsString().replaceAll(".", "*");
+
           dataObject.addProperty(data.getKey(), maskedData);
         }
       }
+    } else if (rule.charAt(0) == 'v') {
+      for (Map.Entry<String, JsonElement> data : dataObject.entrySet()) {
+        int len = data.getValue().getAsString().length();
+
+        String tempData = data.getValue().getAsString();
+        int lenExclRegex = tempData.replaceAll(pattern, "").length();
+
+        String out = generateAsterisks(len - lenExclRegex);
+        String maskedData = data.getValue().getAsString().replaceAll(pattern, out);
+
+        dataObject.addProperty(data.getKey(), maskedData);
+      }
     }
+  }
+
+  private String generateAsterisks(int length) {
+    return "*".repeat(Math.max(0, length));
   }
 
   public String getDataPath() {

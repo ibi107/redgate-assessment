@@ -62,4 +62,23 @@ public class TestDataMasker {
     assertEquals(JsonParser.parseString(modelContent), JsonParser.parseString(maskedContent),
       "The newly masked file should match the exact structure of the model file");
   }
+
+  /*
+  Tests whether masking people.json with b.rules.json masks the file correctly by comparing it with
+  a model solution.
+   */
+  @Test
+  void testPeopleWithRuleB() throws IOException {
+    dataMasker = new DataMasker("resources/people.json", "resources/b.rules.json");
+
+    dataMasker.mask();
+
+    String modelContent = new String(Files.readAllBytes(Paths.get(
+      "resources/masked/people.b.rules.json")));
+    String maskedContent = new String(Files.readAllBytes(Paths.get(
+      "resources/people.json")));
+
+    assertEquals(JsonParser.parseString(modelContent), JsonParser.parseString(maskedContent),
+      "The newly masked file should match the exact structure of the model file");
+  }
 }
