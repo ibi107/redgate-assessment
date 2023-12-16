@@ -18,15 +18,11 @@ public class TestDataMasker {
    */
   @BeforeEach
   void setup() throws IOException {
+    System.gc(); // In case resources lock
+
     Files.copy(Path.of("resources/dummy/people.json"), Path.of("resources/people.json"),
       StandardCopyOption.REPLACE_EXISTING);
     Files.copy(Path.of("resources/dummy/nuts.json"), Path.of("resources/nuts.json"),
-      StandardCopyOption.REPLACE_EXISTING);
-    Files.copy(Path.of("resources/dummy/a.rules.json"), Path.of("resources/a.rules.json"),
-      StandardCopyOption.REPLACE_EXISTING);
-    Files.copy(Path.of("resources/dummy/b.rules.json"), Path.of("resources/b.rules.json"),
-      StandardCopyOption.REPLACE_EXISTING);
-    Files.copy(Path.of("resources/dummy/c.rules.json"), Path.of("resources/c.rules.json"),
       StandardCopyOption.REPLACE_EXISTING);
   }
 
@@ -45,8 +41,7 @@ public class TestDataMasker {
   }
 
   /*
-  Tests whether masking people.json with a.rules.json masks the file correctly by comparing it with
-  a model solution.
+  Tests whether masking people.json with a.rules.json masks the file correctly.
    */
   @Test
   void testPeopleWithRuleA() throws IOException {
@@ -64,8 +59,7 @@ public class TestDataMasker {
   }
 
   /*
-  Tests whether masking people.json with b.rules.json masks the file correctly by comparing it with
-  a model solution.
+  Tests whether masking people.json with b.rules.json masks the file correctly.
    */
   @Test
   void testPeopleWithRuleB() throws IOException {
@@ -77,6 +71,60 @@ public class TestDataMasker {
       "resources/masked/people.b.rules.json")));
     String maskedContent = new String(Files.readAllBytes(Paths.get(
       "resources/people.json")));
+
+    assertEquals(JsonParser.parseString(modelContent), JsonParser.parseString(maskedContent),
+      "The newly masked file should match the exact structure of the model file");
+  }
+
+  /*
+  Trivial case: tests whether masking people.json with c.rules.json masks the file correctly.
+   */
+  @Test
+  void testPeopleWithRuleC() throws IOException {
+    dataMasker = new DataMasker("resources/people.json", "resources/c.rules.json");
+
+    dataMasker.mask();
+
+    String modelContent = new String(Files.readAllBytes(Paths.get(
+      "resources/masked/people.c.rules.json")));
+    String maskedContent = new String(Files.readAllBytes(Paths.get(
+      "resources/people.json")));
+
+    assertEquals(JsonParser.parseString(modelContent), JsonParser.parseString(maskedContent),
+      "The newly masked file should match the exact structure of the model file");
+  }
+
+  @Test
+  /*
+  Trivial case: tests whether masking nuts.json with a.rules.json masks the files correctly.
+   */
+  void testNutsWithRuleA() throws IOException {
+    dataMasker = new DataMasker("resources/nuts.json", "resources/a.rules.json");
+
+    dataMasker.mask();
+
+    String modelContent = new String(Files.readAllBytes(Paths.get(
+      "resources/masked/nuts.a.rules.json")));
+    String maskedContent = new String(Files.readAllBytes(Paths.get(
+      "resources/nuts.json")));
+
+    assertEquals(JsonParser.parseString(modelContent), JsonParser.parseString(maskedContent),
+      "The newly masked file should match the exact structure of the model file");
+  }
+
+  @Test
+  /*
+  Trivial case: tests whether masking nuts.json with b.rules.json masks the files correctly.
+   */
+  void testNutsWithRuleB() throws IOException {
+    dataMasker = new DataMasker("resources/nuts.json", "resources/b.rules.json");
+
+    dataMasker.mask();
+
+    String modelContent = new String(Files.readAllBytes(Paths.get(
+      "resources/masked/nuts.b.rules.json")));
+    String maskedContent = new String(Files.readAllBytes(Paths.get(
+      "resources/nuts.json")));
 
     assertEquals(JsonParser.parseString(modelContent), JsonParser.parseString(maskedContent),
       "The newly masked file should match the exact structure of the model file");
