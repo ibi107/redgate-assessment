@@ -1,6 +1,6 @@
 # Data Masker
 
-A command-line tool which hides sensitive information in a JSON file through leveraging regex patterns as a rule set to determine which data elements should be masked.
+A command-line tool which hides sensitive information in a JSON file through leveraging regex patterns as a rule set.
 
 ## Table of Contents
 
